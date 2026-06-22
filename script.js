@@ -183,9 +183,9 @@ function updatePayment() {
     if (name) html += `<div class="pay-row"><span>Account Name</span><span>${name}</span></div>`;
   } else if (type === "card") {
     const cards = document.getElementById("f-cards").value;
-    const link = document.getElementById("f-cardlink").value;
-    if (cards) html += `<div class="pay-row"><span>Accepted</span><span>${cards}</span></div>`;
-    if (link) html += `<div class="pay-row"><span>Pay at</span><span>${link}</span></div>`;
+    const contact = document.getElementById("f-cardcontact").value;
+    if (cards) html += `<div class="pay-row"><span>Accepted cards</span><span>${cards}</span></div>`;
+    if (contact) html += `<div class="pay-row"><span>Contact</span><span>${contact}</span></div>`;
   } else if (type === "paypal") {
     const email = document.getElementById("f-paypalemail").value;
     if (email) html += `<div class="pay-row"><span>PayPal</span><span>${email}</span></div>`;
