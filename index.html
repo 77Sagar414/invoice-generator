@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoiceKit — Professional Invoice Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Invoice<span>Kit</span></div>
+  <div class="header-actions">
+    <button class="btn-ghost" onclick="clearAll()">Clear all</button>
+    <button class="btn-primary" onclick="downloadPDF()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download PDF
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+
+  <!-- LEFT: FORM -->
+  <aside class="form-panel">
+
+    <section class="form-section">
+      <div class="section-label">Your business</div>
+      <div class="field">
+        <label>Company name</label>
+        <input type="text" id="f-company" placeholder="Acme Studio" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Your email</label>
+        <input type="email" id="f-myemail" placeholder="hello@acmestudio.com" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Address <span class="optional">optional</span></label>
+        <input type="text" id="f-address" placeholder="123 Main St, Tokyo" oninput="update()">
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-label">Bill to</div>
+      <div class="field">
+        <label>Client name</label>
+        <input type="text" id="f-client" placeholder="John Smith" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Client email <span class="optional">optional</span></label>
+        <input type="email" id="f-email" placeholder="john@company.com" oninput="update()">
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-label">Invoice details</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Invoice no.</label>
+          <input type="text" id="f-invnum" placeholder="INV-001" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Issue date</label>
+          <input type="date" id="f-issue" oninput="update()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Due date</label>
+          <input type="date" id="f-due" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Tax %</label>
+          <input type="number" id="f-tax" value="10" min="0" max="100" step="1" oninput="update()">
+        </div>
+      </div>
+      <div class="field">
+        <label>Currency</label>
+        <select id="f-currency" onchange="update()">
+          <option value="$">USD ($)</option>
+          <option value="¥">JPY (¥)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-label">Line items</div>
+      <div id="items-container"></div>
+      <button class="btn-add" onclick="addItem()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add line item
+      </button>
+    </section>
+
+    <section class="form-section">
+      <div class="section-label">Notes</div>
+      <div class="field">
+        <label>Payment terms / notes</label>
+        <textarea id="f-notes" rows="3" placeholder="Payment due within 30 days. Thank you!" oninput="update()"></textarea>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- RIGHT: PREVIEW -->
+  <main class="preview-panel">
+    <div class="preview-label">Live preview</div>
+    <div class="preview-scroll">
+      <div class="invoice-paper" id="invoice-preview">
+
+        <div class="inv-header">
+          <div class="inv-from">
+            <div class="inv-company" id="p-company">Your Company</div>
+            <div class="inv-from-detail" id="p-myemail"></div>
+            <div class="inv-from-detail" id="p-address"></div>
+          </div>
+          <div class="inv-title-block">
+            <div class="inv-title">INVOICE</div>
+            <div class="inv-num" id="p-invnum">INV-001</div>
+          </div>
+        </div>
+
+        <div class="inv-meta">
+          <div class="inv-to">
+            <div class="inv-meta-lbl">Billed to</div>
+            <div class="inv-meta-val" id="p-client">—</div>
+            <div class="inv-meta-sub" id="p-email"></div>
+          </div>
+          <div class="inv-dates">
+            <div class="inv-date-row">
+              <span class="inv-meta-lbl">Issue date</span>
+              <span class="inv-meta-val" id="p-issue">—</span>
+            </div>
+            <div class="inv-date-row">
+              <span class="inv-meta-lbl">Due date</span>
+              <span class="inv-meta-val due" id="p-due">—</span>
+            </div>
+          </div>
+        </div>
+
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th class="col-desc">Description</th>
+              <th class="col-qty">Qty</th>
+              <th class="col-price">Unit price</th>
+              <th class="col-total">Total</th>
+            </tr>
+          </thead>
+          <tbody id="p-items"></tbody>
+        </table>
+
+        <div class="inv-totals">
+          <div class="total-row"><span>Subtotal</span><span id="p-subtotal">—</span></div>
+          <div class="total-row tax-row-display"><span id="p-taxlabel">Tax (10%)</span><span id="p-tax">—</span></div>
+          <div class="total-row grand"><span>Total due</span><span id="p-grand">—</span></div>
+        </div>
+
+        <div class="inv-notes" id="p-notes"></div>
+
+        <div class="inv-footer">Thank you for your business.</div>
+
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
