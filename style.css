@@ -41,13 +41,13 @@ body {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2rem; height: 58px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 12px rgba(108,99,255,0.07);
+ background: #1e2a4a;
+border-bottom: 1px solid #2d3f6b;
+box-shadow: 0 1px 12px rgba(0,0,0,0.15);
 }
 .logo {
   font-family: var(--font-display);
-  font-size: 21px; color: var(--text);
+ font-size: 21px; color: #ffffff;
 }
 .logo span {
   background: linear-gradient(135deg, var(--accent), #a78bfa);
