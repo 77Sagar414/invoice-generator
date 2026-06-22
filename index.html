@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvoiceKit — Professional Invoice Generator</title>
+<title>InvoiceKit — 請求書作成ツール</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -15,10 +15,10 @@
 <header class="site-header">
   <div class="logo">Invoice<span>Kit</span></div>
   <div class="header-actions">
-    <button class="btn-ghost" onclick="clearAll()">Clear all</button>
-    <button class="btn-primary" onclick="downloadPDF()">
+    <button class="btn-ghost" onclick="confirmClear()">クリア</button>
+    <button class="btn-primary" onclick="handleDownload()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download PDF
+      PDFダウンロード
     </button>
   </div>
 </header>
@@ -29,132 +29,132 @@
   <aside class="form-panel">
 
     <section class="form-section">
-      <div class="section-label">Your business</div>
+      <div class="section-label">自社情報</div>
       <div class="field">
-        <label>Company name</label>
-        <input type="text" id="f-company" placeholder="Acme Studio" oninput="update()">
+        <label>会社名</label>
+        <input type="text" id="f-company" placeholder="株式会社Acme" oninput="update()">
       </div>
       <div class="field">
-        <label>Your email</label>
-        <input type="email" id="f-myemail" placeholder="hello@acmestudio.com" oninput="update()">
+        <label>メールアドレス</label>
+        <input type="email" id="f-myemail" placeholder="info@acme.co.jp" oninput="update()">
       </div>
       <div class="field">
-        <label>Address <span class="optional">optional</span></label>
-        <input type="text" id="f-address" placeholder="123 Main St, Tokyo" oninput="update()">
-      </div>
-    </section>
-
-    <section class="form-section">
-      <div class="section-label">Bill to</div>
-      <div class="field">
-        <label>Client name</label>
-        <input type="text" id="f-client" placeholder="John Smith" oninput="update()">
-      </div>
-      <div class="field">
-        <label>Client email <span class="optional">optional</span></label>
-        <input type="email" id="f-email" placeholder="john@company.com" oninput="update()">
+        <label>住所 <span class="optional">任意</span></label>
+        <input type="text" id="f-address" placeholder="東京都渋谷区1-2-3" oninput="update()">
       </div>
     </section>
 
     <section class="form-section">
-      <div class="section-label">Invoice details</div>
+      <div class="section-label">請求先</div>
+      <div class="field">
+        <label>担当者名</label>
+        <input type="text" id="f-client" placeholder="田中 健二" oninput="update()">
+      </div>
+      <div class="field">
+        <label>メールアドレス <span class="optional">任意</span></label>
+        <input type="email" id="f-email" placeholder="tanaka@company.co.jp" oninput="update()">
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-label">請求書情報</div>
       <div class="field-row">
         <div class="field">
-          <label>Invoice no.</label>
+          <label>請求書番号</label>
           <input type="text" id="f-invnum" placeholder="INV-001" oninput="update()">
         </div>
         <div class="field">
-          <label>Issue date</label>
+          <label>発行日</label>
           <input type="date" id="f-issue" oninput="update()">
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Due date</label>
+          <label>支払期限</label>
           <input type="date" id="f-due" oninput="update()">
         </div>
         <div class="field">
-          <label>Tax %</label>
+          <label>消費税率（%）</label>
           <input type="number" id="f-tax" value="10" min="0" max="100" step="1" oninput="update()">
         </div>
       </div>
       <div class="field">
-        <label>Currency</label>
+        <label>通貨</label>
         <select id="f-currency" onchange="update()">
-          <option value="$">USD ($)</option>
-          <option value="¥">JPY (¥)</option>
-          <option value="€">EUR (€)</option>
-          <option value="£">GBP (£)</option>
+          <option value="¥">日本円（¥）</option>
+          <option value="$">米ドル（$）</option>
+          <option value="€">ユーロ（€）</option>
+          <option value="£">英ポンド（£）</option>
         </select>
       </div>
     </section>
 
     <section class="form-section">
-      <div class="section-label">Line items</div>
+      <div class="section-label">明細</div>
       <div id="items-container"></div>
       <button class="btn-add" onclick="addItem()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add line item
+        明細を追加
       </button>
     </section>
 
     <section class="form-section">
-      <div class="section-label">Payment method</div>
+      <div class="section-label">お支払い方法</div>
       <div class="field">
-        <label>Payment type</label>
+        <label>支払い種別</label>
         <select id="f-paytype" onchange="togglePayFields(); update()">
-          <option value="">— Select —</option>
-          <option value="bank">Bank transfer</option>
-          <option value="card">Credit card</option>
+          <option value="">— 選択してください —</option>
+          <option value="bank">銀行振込</option>
+          <option value="card">クレジットカード</option>
           <option value="paypay">PayPay</option>
         </select>
       </div>
-      <!-- Bank transfer fields -->
+      <!-- 銀行振込 -->
       <div id="pay-bank" class="pay-fields" style="display:none">
         <div class="field">
-          <label>Bank name</label>
-          <input type="text" id="f-bankname" placeholder="e.g. Mitsubishi UFJ Bank" oninput="update()">
+          <label>銀行名</label>
+          <input type="text" id="f-bankname" placeholder="三菱UFJ銀行" oninput="update()">
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Account number</label>
+            <label>口座番号</label>
             <input type="text" id="f-accountnum" placeholder="1234567" oninput="update()">
           </div>
           <div class="field">
-            <label>Branch code</label>
+            <label>支店コード</label>
             <input type="text" id="f-branchcode" placeholder="001" oninput="update()">
           </div>
         </div>
         <div class="field">
-          <label>Account name</label>
-          <input type="text" id="f-accountname" placeholder="Acme Studio Inc." oninput="update()">
+          <label>口座名義</label>
+          <input type="text" id="f-accountname" placeholder="カ）アクメ" oninput="update()">
         </div>
       </div>
-      <!-- Credit card fields -->
+      <!-- クレジットカード -->
       <div id="pay-card" class="pay-fields" style="display:none">
         <div class="field">
-          <label>Accepted cards</label>
-          <input type="text" id="f-cards" placeholder="Visa, Mastercard, AMEX" oninput="update()">
+          <label>対応カード</label>
+          <input type="text" id="f-cards" placeholder="Visa、Mastercard、JCB" oninput="update()">
         </div>
         <div class="field">
-          <label>Contact for payment</label>
-          <input type="text" id="f-cardcontact" placeholder="e.g. billing@acme.com or 03-1234-5678" oninput="update()">
+          <label>お問い合わせ先</label>
+          <input type="text" id="f-cardcontact" placeholder="billing@acme.co.jp または 03-1234-5678" oninput="update()">
         </div>
       </div>
-      <!-- PayPay fields -->
+      <!-- PayPay -->
       <div id="pay-paypay" class="pay-fields" style="display:none">
         <div class="field">
-          <label>PayPay ID / phone number</label>
+          <label>PayPay ID / 電話番号</label>
           <input type="text" id="f-paypayid" placeholder="090-1234-5678" oninput="update()">
         </div>
       </div>
     </section>
 
     <section class="form-section">
-      <div class="section-label">Notes</div>
+      <div class="section-label">備考</div>
       <div class="field">
-        <label>Payment terms / notes</label>
-        <textarea id="f-notes" rows="3" placeholder="Payment due within 30 days. Thank you!" oninput="update()"></textarea>
+        <label>支払条件・備考</label>
+        <textarea id="f-notes" rows="3" placeholder="お支払いは30日以内にお願いいたします。" oninput="update()"></textarea>
       </div>
     </section>
 
@@ -162,35 +162,35 @@
 
   <!-- RIGHT: PREVIEW -->
   <main class="preview-panel">
-    <div class="preview-label">Live preview</div>
+    <div class="preview-label">プレビュー</div>
     <div class="preview-scroll">
       <div class="invoice-paper" id="invoice-preview">
 
         <div class="inv-header">
           <div class="inv-from">
-            <div class="inv-company" id="p-company">Your Company</div>
+            <div class="inv-company" id="p-company">会社名</div>
             <div class="inv-from-detail" id="p-myemail"></div>
             <div class="inv-from-detail" id="p-address"></div>
           </div>
           <div class="inv-title-block">
-            <div class="inv-title">INVOICE</div>
+            <div class="inv-title">請求書</div>
             <div class="inv-num" id="p-invnum">INV-001</div>
           </div>
         </div>
 
         <div class="inv-meta">
           <div class="inv-to">
-            <div class="inv-meta-lbl">Billed to</div>
+            <div class="inv-meta-lbl">請求先</div>
             <div class="inv-meta-val" id="p-client">—</div>
             <div class="inv-meta-sub" id="p-email"></div>
           </div>
           <div class="inv-dates">
             <div class="inv-date-row">
-              <span class="inv-meta-lbl">Issue date</span>
+              <span class="inv-meta-lbl">発行日</span>
               <span class="inv-meta-val" id="p-issue">—</span>
             </div>
             <div class="inv-date-row">
-              <span class="inv-meta-lbl">Due date</span>
+              <span class="inv-meta-lbl">支払期限</span>
               <span class="inv-meta-val due" id="p-due">—</span>
             </div>
           </div>
@@ -199,34 +199,44 @@
         <table class="inv-table">
           <thead>
             <tr>
-              <th class="col-desc">Description</th>
-              <th class="col-qty">Qty</th>
-              <th class="col-price">Unit price</th>
-              <th class="col-total">Total</th>
+              <th class="col-desc">内容</th>
+              <th class="col-qty">数量</th>
+              <th class="col-price">単価</th>
+              <th class="col-total">金額</th>
             </tr>
           </thead>
           <tbody id="p-items"></tbody>
         </table>
 
         <div class="inv-totals">
-          <div class="total-row"><span>Subtotal</span><span id="p-subtotal">—</span></div>
-          <div class="total-row tax-row-display"><span id="p-taxlabel">Tax (10%)</span><span id="p-tax">—</span></div>
-          <div class="total-row grand"><span>Total due</span><span id="p-grand">—</span></div>
+          <div class="total-row"><span>小計</span><span id="p-subtotal">—</span></div>
+          <div class="total-row"><span id="p-taxlabel">消費税（10%）</span><span id="p-tax">—</span></div>
+          <div class="total-row grand"><span>合計金額</span><span id="p-grand">—</span></div>
         </div>
 
         <div class="inv-notes" id="p-notes"></div>
 
         <div class="inv-payment" id="p-payment" style="display:none">
-          <div class="inv-payment-title">Payment details</div>
+          <div class="inv-payment-title">お支払い方法</div>
           <div class="inv-payment-body" id="p-payment-body"></div>
         </div>
 
-        <div class="inv-footer">Thank you for your business.</div>
+        <div class="inv-footer">ご利用ありがとうございます。</div>
 
       </div>
     </div>
   </main>
 
+</div>
+
+<!-- カスタムダイアログ -->
+<div id="dialog-overlay" class="dialog-overlay" style="display:none">
+  <div class="dialog-box">
+    <div class="dialog-icon" id="dialog-icon"></div>
+    <div class="dialog-title" id="dialog-title"></div>
+    <div class="dialog-msg" id="dialog-msg"></div>
+    <div class="dialog-btns" id="dialog-btns"></div>
+  </div>
 </div>
 
 <script src="script.js"></script>
