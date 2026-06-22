@@ -106,9 +106,7 @@
           <option value="">— Select —</option>
           <option value="bank">Bank transfer</option>
           <option value="card">Credit card</option>
-          <option value="paypal">PayPal</option>
           <option value="paypay">PayPay</option>
-          <option value="applepay">Apple Pay</option>
         </select>
       </div>
       <!-- Bank transfer fields -->
@@ -143,25 +141,11 @@
           <input type="text" id="f-cardlink" placeholder="https://pay.example.com" oninput="update()">
         </div>
       </div>
-      <!-- PayPal fields -->
-      <div id="pay-paypal" class="pay-fields" style="display:none">
-        <div class="field">
-          <label>PayPal email</label>
-          <input type="email" id="f-paypalemail" placeholder="payments@acme.com" oninput="update()">
-        </div>
-      </div>
       <!-- PayPay fields -->
       <div id="pay-paypay" class="pay-fields" style="display:none">
         <div class="field">
           <label>PayPay ID / phone number</label>
           <input type="text" id="f-paypayid" placeholder="090-1234-5678" oninput="update()">
-        </div>
-      </div>
-      <!-- Apple Pay fields -->
-      <div id="pay-applepay" class="pay-fields" style="display:none">
-        <div class="field">
-          <label>Apple Pay contact / link</label>
-          <input type="text" id="f-applepaylink" placeholder="https://pay.example.com" oninput="update()">
         </div>
       </div>
     </section>
