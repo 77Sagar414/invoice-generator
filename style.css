@@ -41,13 +41,13 @@ body {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2rem; height: 58px;
- background: #1e2a4a;
-border-bottom: 1px solid #2d3f6b;
-box-shadow: 0 1px 12px rgba(0,0,0,0.15);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 12px rgba(108,99,255,0.07);
 }
 .logo {
   font-family: var(--font-display);
- font-size: 21px; color: #ffffff;
+  font-size: 21px; color: var(--text);
 }
 .logo span {
   background: linear-gradient(135deg, var(--accent), #a78bfa);
@@ -308,3 +308,33 @@ textarea { resize: vertical; }
   .preview-panel { padding: 1.25rem; }
   .invoice-paper { padding: 1.5rem; }
 }
+/* ── Payment section ── */
+.pay-fields { display: contents; }
+.inv-payment {
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+.inv-payment-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--success); margin-bottom: 8px;
+}
+.pay-badge {
+  display: inline-block;
+  background: var(--success); color: #fff;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 99px;
+  margin-bottom: 8px;
+}
+.pay-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; padding: 4px 0;
+  border-bottom: 1px solid #bbf7d0;
+  color: var(--text);
+}
+.pay-row:last-child { border-bottom: none; }
+.pay-row span:first-child { color: var(--text2); }
+.pay-row span:last-child { font-weight: 500; }

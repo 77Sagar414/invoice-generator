@@ -99,6 +99,74 @@
     </section>
 
     <section class="form-section">
+      <div class="section-label">Payment method</div>
+      <div class="field">
+        <label>Payment type</label>
+        <select id="f-paytype" onchange="togglePayFields(); update()">
+          <option value="">— Select —</option>
+          <option value="bank">Bank transfer</option>
+          <option value="card">Credit card</option>
+          <option value="paypal">PayPal</option>
+          <option value="paypay">PayPay</option>
+          <option value="applepay">Apple Pay</option>
+        </select>
+      </div>
+      <!-- Bank transfer fields -->
+      <div id="pay-bank" class="pay-fields" style="display:none">
+        <div class="field">
+          <label>Bank name</label>
+          <input type="text" id="f-bankname" placeholder="e.g. Mitsubishi UFJ Bank" oninput="update()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Account number</label>
+            <input type="text" id="f-accountnum" placeholder="1234567" oninput="update()">
+          </div>
+          <div class="field">
+            <label>Branch code</label>
+            <input type="text" id="f-branchcode" placeholder="001" oninput="update()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Account name</label>
+          <input type="text" id="f-accountname" placeholder="Acme Studio Inc." oninput="update()">
+        </div>
+      </div>
+      <!-- Credit card fields -->
+      <div id="pay-card" class="pay-fields" style="display:none">
+        <div class="field">
+          <label>Accepted cards</label>
+          <input type="text" id="f-cards" placeholder="Visa, Mastercard, AMEX" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Payment link <span class="optional">optional</span></label>
+          <input type="text" id="f-cardlink" placeholder="https://pay.example.com" oninput="update()">
+        </div>
+      </div>
+      <!-- PayPal fields -->
+      <div id="pay-paypal" class="pay-fields" style="display:none">
+        <div class="field">
+          <label>PayPal email</label>
+          <input type="email" id="f-paypalemail" placeholder="payments@acme.com" oninput="update()">
+        </div>
+      </div>
+      <!-- PayPay fields -->
+      <div id="pay-paypay" class="pay-fields" style="display:none">
+        <div class="field">
+          <label>PayPay ID / phone number</label>
+          <input type="text" id="f-paypayid" placeholder="090-1234-5678" oninput="update()">
+        </div>
+      </div>
+      <!-- Apple Pay fields -->
+      <div id="pay-applepay" class="pay-fields" style="display:none">
+        <div class="field">
+          <label>Apple Pay contact / link</label>
+          <input type="text" id="f-applepaylink" placeholder="https://pay.example.com" oninput="update()">
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
       <div class="section-label">Notes</div>
       <div class="field">
         <label>Payment terms / notes</label>
@@ -163,6 +231,11 @@
         </div>
 
         <div class="inv-notes" id="p-notes"></div>
+
+        <div class="inv-payment" id="p-payment" style="display:none">
+          <div class="inv-payment-title">Payment details</div>
+          <div class="inv-payment-body" id="p-payment-body"></div>
+        </div>
 
         <div class="inv-footer">Thank you for your business.</div>
 

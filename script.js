@@ -125,6 +125,9 @@ function update() {
 
   // Notes
   g("p-notes").textContent = g("f-notes").value;
+
+  // Payment
+  updatePayment();
 }
 
 // ── PDF ──
@@ -141,7 +144,64 @@ function downloadPDF() {
   html2pdf().set(opts).from(el).save();
 }
 
-// ── Clear ──
+// ── Payment toggle ──
+function togglePayFields() {
+  const type = document.getElementById("f-paytype").value;
+  document.querySelectorAll(".pay-fields").forEach(el => el.style.display = "none");
+  if (type) {
+    const el = document.getElementById("pay-" + type);
+    if (el) el.style.display = "contents";
+  }
+}
+
+// ── Payment preview ──
+function updatePayment() {
+  const type = document.getElementById("f-paytype").value;
+  const panel = document.getElementById("p-payment");
+  const body = document.getElementById("p-payment-body");
+
+  if (!type) { panel.style.display = "none"; return; }
+
+  const labels = {
+    bank: "Bank Transfer",
+    card: "Credit Card",
+    paypal: "PayPal",
+    paypay: "PayPay",
+    applepay: "Apple Pay"
+  };
+
+  let html = `<span class="pay-badge">${labels[type]}</span>`;
+
+  if (type === "bank") {
+    const bank = document.getElementById("f-bankname").value;
+    const acc = document.getElementById("f-accountnum").value;
+    const branch = document.getElementById("f-branchcode").value;
+    const name = document.getElementById("f-accountname").value;
+    if (bank) html += `<div class="pay-row"><span>Bank</span><span>${bank}</span></div>`;
+    if (acc) html += `<div class="pay-row"><span>Account No.</span><span>${acc}</span></div>`;
+    if (branch) html += `<div class="pay-row"><span>Branch</span><span>${branch}</span></div>`;
+    if (name) html += `<div class="pay-row"><span>Account Name</span><span>${name}</span></div>`;
+  } else if (type === "card") {
+    const cards = document.getElementById("f-cards").value;
+    const link = document.getElementById("f-cardlink").value;
+    if (cards) html += `<div class="pay-row"><span>Accepted</span><span>${cards}</span></div>`;
+    if (link) html += `<div class="pay-row"><span>Pay at</span><span>${link}</span></div>`;
+  } else if (type === "paypal") {
+    const email = document.getElementById("f-paypalemail").value;
+    if (email) html += `<div class="pay-row"><span>PayPal</span><span>${email}</span></div>`;
+  } else if (type === "paypay") {
+    const id = document.getElementById("f-paypayid").value;
+    if (id) html += `<div class="pay-row"><span>PayPay ID</span><span>${id}</span></div>`;
+  } else if (type === "applepay") {
+    const link = document.getElementById("f-applepaylink").value;
+    if (link) html += `<div class="pay-row"><span>Apple Pay</span><span>${link}</span></div>`;
+  }
+
+  body.innerHTML = html;
+  panel.style.display = "block";
+}
+
+
 function clearAll() {
   if (!confirm("Clear all fields and start fresh?")) return;
   ["f-company","f-myemail","f-address","f-client","f-email"].forEach(id => {
